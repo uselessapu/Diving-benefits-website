@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Diving Matters</title>
+    <style>
+        /* RESET & BASE */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #00bcd4;
+            --accent: #ff6b9d;
+            --bg: #f8f9fa;
+            --text: #333333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(30, 58, 95, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled { background: rgba(30, 58, 95, 0.98); box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+        .nav-brand { color: #fff; font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--secondary); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 30%, #0e4d6e 60%, #00838f 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 6rem 2rem 4rem;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 80%, rgba(0,188,212,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 900px; }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            animation: fadeInDown 1s ease;
+        }
+        .hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+        .hero-image {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+        .hero-image img { width: 100%; height: auto; display: block; }
+        .hero-cta {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 1rem 2.5rem;
+            background: var(--secondary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.7s both;
+        }
+        .hero-cta:hover { background: #00a5bb; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,188,212,0.4); }
+
+        /* SECTIONS */
+        section { padding: 6rem 2rem; }
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+        .section-header p { font-size: 1.15rem; color: #666; }
+        .section-header .accent-line {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            margin: 1.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* CARD GRID */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+        .card-image {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .card:hover .card-image img { transform: scale(1.08); }
+        .card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.05));
+            pointer-events: none;
+        }
+        .card-body { padding: 1.8rem; }
+        .card-body h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+        .card-body p { color: #555; font-size: 0.95rem; line-height: 1.7; }
+
+        /* BENEFITS SECTION */
+        .benefits-section { background: linear-gradient(180deg, #f0f8ff 0%, var(--bg) 100%); }
+        .benefit-card .card-body h3 .emoji { margin-right: 0.5rem; font-size: 1.4rem; }
+
+        /* STATS SECTION */
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #0e4d6e 100%);
+            padding: 5rem 2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .stat-item { color: #fff; }
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .stat-label { font-size: 1rem; opacity: 0.85; font-weight: 500; }
+
+        /* CTA BANNER */
+        .cta-section {
+            background: linear-gradient(135deg, #00838f 0%, var(--secondary) 50%, #0097a7 100%);
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        .cta-section h2 { color: #fff; font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1rem; font-weight: 800; }
+        .cta-section p { color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: #fff;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+        /* FOOTER */
+        .footer {
+            background: #0a1628;
+            color: rgba(255,255,255,0.7);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .footer-content { max-width: 800px; margin: 0 auto; }
+        .footer h3 { color: #fff; font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .footer-links a { color: var(--secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        /* ===== AQUATIC ATHLETE CHALLENGE GAME ===== */
+        .game-section {
+            background: linear-gradient(180deg, #e3f2fd 0%, #b3e5fc 50%, #e1f5fe 100%);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(0,188,212,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(30,58,95,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .game-section .section-header h2 { color: var(--primary); }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(30,58,95,0.12);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Pool Canvas Area */
+        .pool-area {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(180deg, #0288d1 0%, #01579b 40%, #002f6c 100%);
+            overflow: hidden;
+        }
+        .pool-area canvas { display: block; width: 100%; height: 100%; }
+
+        /* HUD - Heads Up Display */
+        .game-hud {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #e0e0e0;
+        }
+        .hud-item {
+            background: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        .hud-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            font-weight: 600;
+        }
+        .hud-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 0.25rem;
+        }
+        .hud-value.score-val { color: var(--secondary); }
+        .hud-value.timer-val { color: #e65100; }
+
+        /* Underwater distance bar */
+        .uw-bar-wrap {
+            padding: 1rem 1.5rem;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+        }
+        .uw-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .uw-bar-label { font-size: 0.85rem; font-weight: 700; color: var(--primary); }
+        .uw-bar-dist { font-size: 0.85rem; font-weight: 700; color: #555; }
+        .uw-bar-track {
+            width: 100%;
+            height: 14px;
+            background: #e0e0e0;
+            border-radius: 7px;
+            overflow: hidden;
+            position: relative;
+        }
+        .uw-bar-fill {
+            height: 100%;
+            border-radius: 7px;
+            transition: width 0.4s ease, background 0.4s ease;
+            width: 0%;
+            background: #4caf50;
+        }
+        .uw-bar-fill.warning { background: linear-gradient(90deg, #4caf50, #ffc107); }
+        .uw-bar-fill.danger { background: linear-gradient(90deg, #ffc107, #f44336); }
+        .uw-bar-mark {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            width: 2px;
+            background: rgba(0,0,0,0.3);
+        }
+        .uw-bar-mark span {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        /* Event notification */
+        .game-event {
+            padding: 0.8rem 1.5rem;
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            font-size: 0.9rem;
+            color: #2e7d32;
+            font-weight: 500;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .game-event.warn { background: #fff3e0; border-left-color: #ff9800; color: #e65100; }
+        .game-event.danger { background: #ffebee; border-left-color: #f44336; color: #c62828; }
+        .game-event.info { background: #e3f2fd; border-left-color: #2196f3; color: #1565c0; }
+        .game-event.gold { background: #fff8e1; border-left-color: #ffd600; color: #f57f17; }
+
+        /* Controls area */
+        .game-controls {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .ctrl-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .game-btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-btn:active { transform: scale(0.96); }
+        .game-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .game-btn.primary {
+            background: linear-gradient(135deg, var(--secondary), #0097a7);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.3);
+        }
+        .game-btn.primary:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(0,188,212,0.5); transform: translateY(-2px); }
+        .game-btn.surface {
+            background: linear-gradient(135deg, #ff6b9d, #e91e63);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+            animation: pulse-surface 1.2s ease-in-out infinite;
+        }
+        .game-btn.surface:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(255,107,157,0.5); }
+        @keyframes pulse-surface {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255,107,157,0.3); }
+            50% { box-shadow: 0 4px 25px rgba(255,107,157,0.6); }
+        }
+        .game-btn.speed { background: linear-gradient(135deg, #f44336, #d32f2f); color: #fff; }
+        .game-btn.speed:hover:not(:disabled) { box-shadow: 0 4px 15px rgba(244,67,54,0.4); transform: translateY(-2px); }
+        .game-btn.control { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; }
+        .game-btn.control:hover:not(:disabled) { box-shadow: 0 4px 15px rgba(255,152,0,0.4); transform: translateY(-2px); }
+        .game-btn.cautious { background: linear-gradient(135deg, #4caf50, #388e3c); color: #fff; }
+        .game-btn.cautious:hover:not(:disabled) { box-shadow: 0 4px 15px rgba(76,175,80,0.4); transform: translateY(-2px); }
+        .game-btn.reset {
+            background: transparent;
+            color: #888;
+            border: 2px solid #ddd;
+        }
+        .game-btn.reset:hover:not(:disabled) { border-color: #aaa; color: #555; }
+        .stroke-info { font-size: 0.7rem; display: block; opacity: 0.85; margin-top: 2px; }
+
+        /* Difficulty selector */
+        .difficulty-select {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .diff-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .diff-btn:hover { border-color: var(--secondary); }
+        .diff-btn.active { border-color: var(--secondary); background: var(--secondary); color: #fff; }
+
+        /* Game info sidebar (desktop) */
+        .game-info-panel {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .info-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid #eee;
+        }
+        .info-box h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .info-box p, .info-box ul { font-size: 0.85rem; color: #555; }
+        .info-box ul { padding-left: 1.2rem; }
+        .info-box li { margin-bottom: 0.25rem; }
+
+        /* Game overlay (win/lose screens) */
+        .game-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+        .game-overlay.active { display: flex; }
+        .overlay-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .overlay-card h3 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .overlay-card .result-icon { font-size: 4rem; margin-bottom: 1rem; display: block; }
+        .overlay-card .result-stats { margin: 1rem 0; text-align: left; }
+        .overlay-card .result-stats div {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        .overlay-card .result-stats span:last-child { font-weight: 700; color: var(--primary); }
+        .overlay-btns { display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
+
+        /* Achievements */
+        .achievements { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        .badge.gold { background: #fff8e1; color: #f57f17; border-color: #ffecb3; }
+        .badge.blue { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+
+        /* Best score bar */
+        .best-score-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, rgba(30,58,95,0.05), rgba(0,188,212,0.08), rgba(30,58,95,0.05));
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .best-score-bar strong { color: var(--primary); }
+
+        /* Keyboard hint */
+        .kb-hint {
+            font-size: 0.75rem;
+            color: #aaa;
+            text-align: center;
+            padding-bottom: 0.5rem;
+        }
+        .kb-hint kbd {
+            background: #eee;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 0.7rem;
+            border: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .game-hud { grid-template-columns: repeat(2, 1fr); }
+            .pool-area { height: 150px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .game-btn { padding: 0.7rem 1.2rem; font-size: 0.85rem; }
+            .overlay-card { padding: 1.5rem; }
+        }
+        @media (max-width: 480px) {
+            .game-hud { grid-template-columns: repeat(2, 1fr); }
+            .hud-value { font-size: 1.2rem; }
+        }
+
+        /* MOBILE NAV */
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+        .nav-toggle span { display: block; width: 25px; height: 3px; background: #fff; margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(30,58,95,0.98); padding: 1rem 2rem; gap: 1rem; }
+            .nav-links.active { display: flex; }
+            .nav-toggle { display: block; }
+            .card-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .card-image { height: 220px; }
+            section { padding: 4rem 1.5rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-number { font-size: 2.5rem; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero { padding: 5rem 1.5rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-brand">Why Diving Matters</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#why-diving">Why It Matters</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+            <li><a href="#game-section">Game</a></li>
+            <li><a href="#stats">Impact</a></li>
+            <li><a href="#cta">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Why Diving Matters</h1>
+            <p>Discover the Beauty, Strength, and Artistry of Diving</p>
+            <div class="hero-image shimmer">
+                <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/82d88f51-f734-44a2-823e-d38adafaa332/result_00.png" alt="Professional diver performing a graceful dive above crystal clear water">
+            </div>
+            <a href="#why-diving" class="hero-cta">Explore the World of Diving</a>
+        </div>
+    </section>
+
+    <!-- WHY DIVING MATTERS -->
+    <section id="why-diving">
+        <div class="section-header">
+            <h2>Why Diving Matters</h2>
+            <p>From precision and courage to artistry and global unity, diving represents the pinnacle of human athletic achievement.</p>
+            <div class="accent-line"></div>
+        </div>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/06e9cfd4-c396-4715-9f87-3b6d6ff99989/result_00.png" alt="Diver executing a perfect somersault">
+                </div>
+                <div class="card-body">
+                    <h3>Precision & Control</h3>
+                    <p>Every movement is calculated to perfection. Divers must master their body in three-dimensional space, executing complex rotations and flips with exact timing.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/fdb3d491-865e-45b7-bc71-d6c955e59099/result_00.png" alt="Diver on high platform with determination">
+                </div>
+                <div class="card-body">
+                    <h3>Courage & Determination</h3>
+                    <p>Diving from heights of 10 meters requires immense bravery. Athletes overcome fear to achieve extraordinary feats that defy human expectations.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/eadc6675-a000-4bc2-9c60-c77d0bffd032/result_00.png" alt="Synchronized divers in artistic form">
+                </div>
+                <div class="card-body">
+                    <h3>Artistic Grace</h3>
+                    <p>It's not just about the mechanics -- diving is an art form. Every entry, every transition, every movement tells a story of elegance and beauty.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/d9a8679f-f211-4541-bfb2-2dbbf2b81961/result_00.png" alt="Athletic diver showing physical excellence">
+                </div>
+                <div class="card-body">
+                    <h3>Athletic Excellence</h3>
+                    <p>Divers combine strength, flexibility, balance, and endurance. Years of training build the foundation for performances that inspire millions worldwide.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/21bc93d5-b626-479c-92b1-acc9b3e80a1e/result_00.png" alt="Diverse group of international divers united">
+                </div>
+                <div class="card-body">
+                    <h3>Global Impact</h3>
+                    <p>Diving unites nations and cultures. The sport transcends boundaries, bringing athletes and fans together in celebration of human potential.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/b4afacc3-feab-4beb-9461-ed5c2aaaedb6/result_00.png" alt="Young diver celebrating achievement">
+                </div>
+                <div class="card-body">
+                    <h3>Personal Growth</h3>
+                    <p>Diving teaches discipline, resilience, and mental toughness. Athletes develop confidence that extends far beyond the diving board.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BENEFITS SECTION -->
+    <section class="benefits-section" id="benefits">
+        <div class="section-header">
+            <h2>Physical & Mental Benefits</h2>
+            <p>Diving transforms both body and mind, offering a comprehensive path to wellness and personal development.</p>
+            <div class="accent-line"></div>
+        </div>
+        <div class="card-grid">
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/520da20b-ade1-4a27-a6dc-c44c069533c5/result_00.png" alt="Diver in strength training">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x1F4AA;</span>Strength Building</h3>
+                    <p>Develops core stability, upper body power, and explosive leg strength through intense training.</p>
+                </div>
+            </div>
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/ae542846-a005-4006-9237-f5492c0909a8/result_00.png" alt="Flexible diver stretching">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x1F9D8;</span>Flexibility</h3>
+                    <p>Regular stretching and movement training enhance range of motion and joint health.</p>
+                </div>
+            </div>
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/96283e38-e47a-4467-8604-b84e6a5ec181/result_00.png" alt="Diver in focused meditative state">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x1F9E0;</span>Mental Clarity</h3>
+                    <p>Focus and concentration required for diving improve cognitive abilities and emotional control.</p>
+                </div>
+            </div>
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/c805feb5-0544-48b2-91d5-333c1a3a0490/result_00.png" alt="Energetic diver during cardiovascular training">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x2764;&#xFE0F;</span>Cardiovascular Health</h3>
+                    <p>High-intensity training strengthens the heart and improves overall cardiovascular fitness.</p>
+                </div>
+            </div>
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/d86d2bcd-0219-4af8-afc8-99a3608828e8/result_00.png" alt="Diver showing perfect coordination">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x26A1;</span>Coordination</h3>
+                    <p>Spatial awareness and body control improve dramatically through consistent diving practice.</p>
+                </div>
+            </div>
+            <div class="card benefit-card">
+                <div class="card-image shimmer">
+                    <img src="https://mule-router-assets.muleusercontent.com/public/production/gpt-image-2/96f085f8-8d5c-47c8-b1d4-53c878194595/result_00.png" alt="Triumphant diver celebrating victory">
+                </div>
+                <div class="card-body">
+                    <h3><span class="emoji">&#x1F3C6;</span>Confidence</h3>
+                    <p>Overcoming challenges builds self-esteem and mental resilience for life challenges.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AQUATIC ATHLETE CHALLENGE GAME -->
+    <section class="game-section" id="game-section">
+        <div class="section-header">
+            <h2>Aquatic Athlete Challenge</h2>
+            <p>Swim like a champion! Follow World Aquatics rules and beat the race!</p>
+            <div class="accent-line"></div>
+        </div>
+        <div class="game-container" id="gameContainer">
+            <!-- Pool Visualization -->
+            <div class="pool-area">
+                <canvas id="poolCanvas"></canvas>
+            </div>
+            <!-- HUD -->
+            <div class="game-hud">
+                <div class="hud-item"><div class="hud-label">Distance</div><div class="hud-value" id="hudDist">0 m</div></div>
+                <div class="hud-item"><div class="hud-label">Score</div><div class="hud-value score-val" id="hudScore">0</div></div>
+                <div class="hud-item"><div class="hud-label">Time</div><div class="hud-value timer-val" id="hudTime">0.0s</div></div>
+                <div class="hud-item"><div class="hud-label">Status</div><div class="hud-value" id="hudStatus">Ready</div></div>
+            </div>
+            <!-- Underwater Distance Bar -->
+            <div class="uw-bar-wrap" id="uwBarWrap">
+                <div class="uw-bar-header">
+                    <span class="uw-bar-label">Underwater Distance</span>
+                    <span class="uw-bar-dist" id="uwDistLabel">0 / 15 m</span>
+                </div>
+                <div class="uw-bar-track">
+                    <div class="uw-bar-fill" id="uwBarFill"></div>
+                    <div class="uw-bar-mark" style="left:66.6%"><span>10m</span></div>
+                    <div class="uw-bar-mark" style="left:100%"><span>15m</span></div>
+                </div>
+            </div>
+            <!-- Event Display -->
+            <div class="game-event info" id="gameEvent">Select difficulty and press START RACE to begin!</div>
+            <!-- Controls -->
+            <div class="game-controls" id="gameControls">
+                <div class="difficulty-select" id="diffSelect">
+                    <button class="diff-btn active" data-level="1">Beginner (100m)</button>
+                    <button class="diff-btn" data-level="2">Intermediate (150m)</button>
+                    <button class="diff-btn" data-level="3">Expert (200m)</button>
+                </div>
+                <div class="ctrl-row" id="mainBtns">
+                    <button class="game-btn primary" id="btnStart">START RACE</button>
+                    <button class="game-btn reset" id="btnReset" disabled>RESET</button>
+                </div>
+                <div class="ctrl-row" id="surfaceRow" style="display:none">
+                    <button class="game-btn surface" id="btnSurface">SURFACE NOW</button>
+                </div>
+                <div class="ctrl-row" id="strokeRow" style="display:none">
+                    <button class="game-btn speed" data-stroke="speed">Speed Stroke<span class="stroke-info">5m, risky</span></button>
+                    <button class="game-btn control" data-stroke="control">Control Stroke<span class="stroke-info">3m, balanced</span></button>
+                    <button class="game-btn cautious" data-stroke="cautious">Cautious Stroke<span class="stroke-info">2m, safe</span></button>
+                </div>
+                <div class="kb-hint" id="kbHint">Keyboard: <kbd>Space</kbd> Surface &middot; <kbd>1</kbd> Speed &middot; <kbd>2</kbd> Control &middot; <kbd>3</kbd> Cautious &middot; <kbd>R</kbd> Reset</div>
+            </div>
+            <!-- Best scores -->
+            <div class="best-score-bar" id="bestScoreBar">
+                <span>Best Score: <strong id="bestScoreVal">--</strong></span>
+                <span>Games Played: <strong id="gamesPlayed">0</strong></span>
+                <span>Win Rate: <strong id="winRate">--</strong></span>
+            </div>
+            <!-- Info Panel -->
+            <div class="game-info-panel">
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h4>Rules</h4>
+                        <ul>
+                            <li>Max 15m underwater per dive</li>
+                            <li>Surface before the limit or be disqualified</li>
+                            <li>Choose strokes wisely to manage fatigue</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Scoring</h4>
+                        <ul>
+                            <li>1 point per meter swum</li>
+                            <li>Speed bonus for fast finishes</li>
+                            <li>Technique bonus for good form</li>
+                            <li>Rule compliance bonus</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Win/Lose Overlay -->
+            <div class="game-overlay" id="gameOverlay">
+                <div class="overlay-card" id="overlayCard">
+                    <!-- filled dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section" id="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" data-target="136">0</div>
+                <div class="stat-label">Countries with Diving Programs</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="8">0</div>
+                <div class="stat-label">Olympic Diving Events</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="10">0</div>
+                <div class="stat-label">Meter Platform Height</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="55">0</div>
+                <div class="stat-label">km/h Entry Speed</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section" id="cta">
+        <h2>Ready to Take the Plunge?</h2>
+        <p>Whether you're a beginner or an aspiring athlete, diving offers a journey of self-discovery, physical mastery, and unforgettable experiences.</p>
+        <a href="#hero" class="cta-btn">Start Your Diving Journey</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Why Diving Matters</h3>
+            <p>Celebrating the art, science, and spirit of diving.</p>
+            <div class="footer-links">
+                <a href="#why-diving">Why It Matters</a>
+                <a href="#benefits">Benefits</a>
+                <a href="#game-section">Game</a>
+                <a href="#stats">Impact</a>
+                <a href="#cta">Get Started</a>
+            </div>
+            <p style="margin-top: 2rem; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 Why Diving Matters. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile nav toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('active'));
+        });
+
+        // Intersection Observer for card animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.card').forEach(card => observer.observe(card));
+
+        // Counter animation for stats
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.dataset.target);
+                        const duration = 2000;
+                        const start = performance.now();
+                        const animate = (now) => {
+                            const elapsed = now - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            const eased = 1 - Math.pow(1 - progress, 3);
+                            counter.textContent = Math.round(target * eased);
+                            if (progress < 1) requestAnimationFrame(animate);
+                            else counter.textContent = target;
+                        };
+                        requestAnimationFrame(animate);
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        counterObserver.observe(document.querySelector('.stats-grid'));
+
+        // ===== AQUATIC ATHLETE CHALLENGE GAME =====
+        (function() {
+            // --- State ---
+            const DIFFICULTIES = {
+                1: { name: 'Beginner', distance: 100, lives: 3 },
+                2: { name: 'Intermediate', distance: 150, lives: 2 },
+                3: { name: 'Expert', distance: 200, lives: 1 }
+            };
+            const FACTS = [
+                'World Aquatics enforces a 15-meter maximum underwater limit per swim.',
+                'Olympic pools must be 3.0 meters deep for optimal competition.',
+                'Minimum pool depth for major events is 2.0 meters.',
+                'Wave turbulence affects swimming speed \u2014 deeper pools are faster.',
+                'Breaststroke athletes can take one pull and one kick while submerged.',
+                'Proper breathing technique is crucial for speed and endurance.',
+                'Elite swimmers average 35+ km/h when entering water.',
+                'Training focus: muscle memory for the 15-meter turn.',
+                'Fatigue management is key to competitive swimming.',
+                'Perfect form in freestyle can add 2\u20133 meters per stroke.'
+            ];
+            const EVENTS = [
+                { text: 'Wave Turbulence Alert! Slight speed reduction.', type: 'warn', effect: 'slow' },
+                { text: 'Perfect Form! Speed boost + bonus points!', type: 'gold', effect: 'boost' },
+                { text: 'Muscle Fatigue! Reduced stroke distance next turn.', type: 'warn', effect: 'fatigue' },
+                { text: 'Pool Depth: 2.5m optimal! Faster swimming!', type: 'info', effect: 'boost' },
+                { text: 'Breaststroke Exception Applied \u2014 special rule!', type: 'info', effect: 'none' },
+                { text: 'Crowd Cheer! Motivation boost!', type: 'gold', effect: 'boost' },
+                { text: 'Coach Tip: Breathing technique is crucial!', type: 'info', effect: 'none' }
+            ];
+            let state = {
+                phase: 'idle', // idle, diving, underwater, surfaced, over
+                difficulty: 1,
+                totalDist: 100,
+                distance: 0,
+                uwDist: 0,
+                score: 0,
+                lives: 3,
+                timer: 0,
+                timerInterval: null,
+                uwInterval: null,
+                fatigued: false,
+                boosted: false,
+                perfectSurfaces: 0,
+                strokesTaken: 0,
+                bestScore: parseInt(localStorage.getItem('aac_best') || '0'),
+                gamesPlayed: parseInt(localStorage.getItem('aac_games') || '0'),
+                gamesWon: parseInt(localStorage.getItem('aac_wins') || '0')
+            };
+
+            // --- DOM refs ---
+            const $ = id => document.getElementById(id);
+            const hudDist = $('hudDist'), hudScore = $('hudScore'), hudTime = $('hudTime'), hudStatus = $('hudStatus');
+            const uwBarFill = $('uwBarFill'), uwDistLabel = $('uwDistLabel');
+            const gameEvent = $('gameEvent');
+            const btnStart = $('btnStart'), btnReset = $('btnReset'), btnSurface = $('btnSurface');
+            const surfaceRow = $('surfaceRow'), strokeRow = $('strokeRow'), mainBtns = $('mainBtns'), diffSelect = $('diffSelect');
+            const gameOverlay = $('gameOverlay'), overlayCard = $('overlayCard');
+            const bestScoreVal = $('bestScoreVal'), gamesPlayedEl = $('gamesPlayed'), winRateEl = $('winRate');
+            const canvas = $('poolCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // --- Canvas setup ---
+            let animFrame;
+            let swimmer = { x: 40, y: 0, targetX: 40, underwater: false };
+            function resizeCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width * 2;
+                canvas.height = rect.height * 2;
+                ctx.scale(1, 1);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Wave particles
+            let waves = [];
+            for (let i = 0; i < 30; i++) {
+                waves.push({ x: Math.random() * 2000, y: Math.random() * 400, r: 2 + Math.random() * 4, speed: 0.3 + Math.random() * 0.8, alpha: 0.1 + Math.random() * 0.3 });
+            }
+
+            function drawPool() {
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                // Water gradient
+                const grd = ctx.createLinearGradient(0, 0, 0, h);
+                grd.addColorStop(0, '#0288d1');
+                grd.addColorStop(0.5, '#01579b');
+                grd.addColorStop(1, '#002f6c');
+                ctx.fillStyle = grd;
+                ctx.fillRect(0, 0, w, h);
+
+                // Lane lines
+                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                ctx.lineWidth = 2;
+                for (let i = 1; i < 6; i++) {
+                    const y = (h / 6) * i;
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // Distance markers
+                if (state.totalDist > 0) {
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                    ctx.font = '18px sans-serif';
+                    ctx.textAlign = 'center';
+                    for (let m = 25; m < state.totalDist; m += 25) {
+                        const px = 40 + (m / state.totalDist) * (w - 80);
+                        ctx.fillText(m + 'm', px, 22);
+                        ctx.beginPath();
+                        ctx.setLineDash([4, 6]);
+                        ctx.moveTo(px, 28); ctx.lineTo(px, h);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    // Finish line
+                    ctx.strokeStyle = 'rgba(255,215,0,0.5)';
+                    ctx.lineWidth = 3;
+                    const fx = w - 40;
+                    ctx.beginPath(); ctx.moveTo(fx, 0); ctx.lineTo(fx, h); ctx.stroke();
+                    ctx.fillStyle = 'rgba(255,215,0,0.7)';
+                    ctx.font = 'bold 20px sans-serif';
+                    ctx.fillText('FINISH', fx, h - 12);
+                }
+
+                // Wave particles
+                waves.forEach(p => {
+                    p.x += p.speed;
+                    if (p.x > w + 10) p.x = -10;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+                    ctx.fill();
+                });
+
+                // Swimmer
+                const sy = swimmer.underwater ? h * 0.65 : h * 0.35;
+                swimmer.y += (sy - swimmer.y) * 0.08;
+                swimmer.x += (swimmer.targetX - swimmer.x) * 0.06;
+                drawSwimmer(swimmer.x, swimmer.y, swimmer.underwater);
+
+                // Bubbles when underwater
+                if (swimmer.underwater && Math.random() < 0.3) {
+                    waves.push({ x: swimmer.x + Math.random() * 20 - 10, y: swimmer.y - 5, r: 1 + Math.random() * 3, speed: -0.1, alpha: 0.4 });
+                }
+
+                animFrame = requestAnimationFrame(drawPool);
+            }
+
+            function drawSwimmer(x, y, uw) {
+                ctx.save();
+                // Body
+                ctx.fillStyle = uw ? '#ffcc80' : '#ffe0b2';
+                ctx.beginPath();
+                ctx.ellipse(x, y, 22, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Head
+                ctx.beginPath();
+                ctx.arc(x + 24, y - 2, 9, 0, Math.PI * 2);
+                ctx.fill();
+                // Cap
+                ctx.fillStyle = 'var(--secondary)';
+                ctx.fillStyle = '#00bcd4';
+                ctx.beginPath();
+                ctx.arc(x + 24, y - 5, 8, Math.PI, 0);
+                ctx.fill();
+                // Arms (animated)
+                const armAngle = (Date.now() / 200) % (Math.PI * 2);
+                ctx.strokeStyle = '#ffcc80';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                // Left arm
+                ctx.beginPath();
+                ctx.moveTo(x + 10, y);
+                ctx.lineTo(x + 10 + Math.cos(armAngle) * 16, y + Math.sin(armAngle) * 16);
+                ctx.stroke();
+                // Right arm
+                ctx.beginPath();
+                ctx.moveTo(x - 5, y);
+                ctx.lineTo(x - 5 + Math.cos(armAngle + Math.PI) * 16, y + Math.sin(armAngle + Math.PI) * 16);
+                ctx.stroke();
+                // Legs
+                const legAngle = (Date.now() / 250) % (Math.PI * 2);
+                ctx.beginPath();
+                ctx.moveTo(x - 20, y + 3);
+                ctx.lineTo(x - 32 + Math.sin(legAngle) * 6, y + 8);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x - 20, y - 3);
+                ctx.lineTo(x - 32 + Math.sin(legAngle + Math.PI) * 6, y - 8);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            drawPool();
+
+            // --- UI Helpers ---
+            function updateHUD() {
+                hudDist.textContent = state.distance + ' / ' + state.totalDist + ' m';
+                hudScore.textContent = state.score;
+                hudStatus.textContent = state.phase === 'idle' ? 'Ready' :
+                    state.phase === 'underwater' ? 'Underwater' :
+                    state.phase === 'surfaced' ? 'Swimming' :
+                    state.phase === 'diving' ? 'Diving...' :
+                    state.phase === 'over' ? 'Finished' : state.phase;
+                updateBest();
+            }
+            function updateUWBar() {
+                const pct = Math.min((state.uwDist / 15) * 100, 100);
+                uwBarFill.style.width = pct + '%';
+                uwBarFill.className = 'uw-bar-fill' + (state.uwDist > 13 ? ' danger' : state.uwDist > 10 ? ' warning' : '');
+                uwDistLabel.textContent = state.uwDist.toFixed(1) + ' / 15 m';
+            }
+            function setEvent(text, type) {
+                gameEvent.textContent = text;
+                gameEvent.className = 'game-event ' + (type || 'info');
+            }
+            function updateBest() {
+                bestScoreVal.textContent = state.bestScore > 0 ? state.bestScore : '--';
+                gamesPlayedEl.textContent = state.gamesPlayed;
+                winRateEl.textContent = state.gamesPlayed > 0 ? Math.round((state.gamesWon / state.gamesPlayed) * 100) + '%' : '--';
+            }
+            function showControls(set) {
+                surfaceRow.style.display = set === 'surface' ? 'flex' : 'none';
+                strokeRow.style.display = set === 'stroke' ? 'flex' : 'none';
+                mainBtns.style.display = set === 'main' ? 'flex' : 'none';
+                diffSelect.style.display = set === 'main' ? 'flex' : 'none';
+            }
+            function swimmerPos() {
+                const w = canvas.width;
+                swimmer.targetX = 40 + (state.distance / state.totalDist) * (w - 80);
+            }
+
+            // --- Timer ---
+            function startTimer() {
+                state.timer = 0;
+                state.timerInterval = setInterval(() => {
+                    state.timer += 0.1;
+                    hudTime.textContent = state.timer.toFixed(1) + 's';
+                }, 100);
+            }
+            function stopTimer() {
+                clearInterval(state.timerInterval);
+            }
+
+            // --- Underwater phase ---
+            function startUnderwater() {
+                state.phase = 'underwater';
+                state.uwDist = 0;
+                swimmer.underwater = true;
+                updateHUD();
+                showControls('surface');
+                setEvent('You are underwater! Surface before 15m!', 'warn');
+                state.uwInterval = setInterval(() => {
+                    state.uwDist += 0.5;
+                    state.distance = Math.min(state.distance + 0.5, state.totalDist);
+                    state.score += 1;
+                    swimmerPos();
+                    updateUWBar();
+                    updateHUD();
+                    if (state.uwDist >= 15) {
+                        clearInterval(state.uwInterval);
+                        disqualify();
+                    }
+                    if (state.distance >= state.totalDist) {
+                        clearInterval(state.uwInterval);
+                        victory();
+                    }
+                }, 300);
+            }
+
+            // --- Surface ---
+            function doSurface() {
+                if (state.phase !== 'underwater') return;
+                clearInterval(state.uwInterval);
+                swimmer.underwater = false;
+                state.phase = 'surfaced';
+                if (state.uwDist <= 10) {
+                    state.score += 15;
+                    state.perfectSurfaces++;
+                    setEvent('Perfect surface at ' + state.uwDist.toFixed(1) + 'm! +15 bonus points!', 'gold');
+                } else {
+                    setEvent('Surfaced at ' + state.uwDist.toFixed(1) + 'm. Choose your stroke!', 'info');
+                }
+                state.uwDist = 0;
+                updateUWBar();
+                updateHUD();
+                if (state.distance >= state.totalDist) { victory(); return; }
+                showControls('stroke');
+            }
+
+            // --- Strokes ---
+            function doStroke(type) {
+                if (state.phase !== 'surfaced') return;
+                state.strokesTaken++;
+                let baseDist = type === 'speed' ? 5 : type === 'control' ? 3 : 2;
+                let bonus = 0;
+
+                // Fatigue / boost modifiers
+                if (state.fatigued) { baseDist = Math.max(1, baseDist - 1); state.fatigued = false; }
+                if (state.boosted) { baseDist += 1; bonus += 5; state.boosted = false; }
+
+                // Risk for speed stroke
+                if (type === 'speed' && Math.random() < 0.25) {
+                    baseDist = Math.max(1, baseDist - 2);
+                    setEvent('Risky stroke! Lost control \u2014 only ' + baseDist + 'm gained.', 'warn');
+                } else {
+                    bonus += type === 'speed' ? 3 : type === 'control' ? 5 : 8;
+                }
+
+                state.distance = Math.min(state.distance + baseDist, state.totalDist);
+                state.score += baseDist + bonus;
+                swimmerPos();
+                updateHUD();
+
+                if (state.distance >= state.totalDist) { victory(); return; }
+
+                // Random event
+                if (Math.random() < 0.45) {
+                    const evt = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+                    setEvent(evt.text, evt.type);
+                    if (evt.effect === 'fatigue') state.fatigued = true;
+                    if (evt.effect === 'boost') { state.boosted = true; state.score += 5; }
+                    if (evt.effect === 'slow') { /* next underwater will be slightly slower */ }
+                } else {
+                    const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
+                    setEvent(fact, 'info');
+                }
+
+                // Go back underwater
+                setTimeout(() => {
+                    if (state.phase === 'surfaced' || state.phase === 'over') {
+                        if (state.phase !== 'over') startUnderwater();
+                    }
+                }, 1200);
+                showControls(null);
+            }
+
+            // --- End conditions ---
+            function disqualify() {
+                state.phase = 'over';
+                state.lives--;
+                stopTimer();
+                swimmer.underwater = false;
+                showControls(null);
+                state.gamesPlayed++;
+                localStorage.setItem('aac_games', state.gamesPlayed);
+                updateBest();
+
+                let html = '<span class="result-icon">&#x1F6AB;</span>';
+                html += '<h3 style="color:#c62828">DISQUALIFIED!</h3>';
+                html += '<p style="color:#666;margin-bottom:1rem">You violated the 15-meter underwater rule!</p>';
+                html += '<div class="result-stats">';
+                html += '<div><span>Distance</span><span>' + Math.round(state.distance) + ' / ' + state.totalDist + ' m</span></div>';
+                html += '<div><span>Time</span><span>' + state.timer.toFixed(1) + 's</span></div>';
+                html += '<div><span>Score</span><span>' + state.score + '</span></div>';
+                html += '</div>';
+                html += '<div class="overlay-btns">';
+                html += '<button class="game-btn primary" onclick="window._gameReset()">TRY AGAIN</button>';
+                html += '</div>';
+                overlayCard.innerHTML = html;
+                gameOverlay.classList.add('active');
+            }
+
+            function victory() {
+                state.phase = 'over';
+                stopTimer();
+                swimmer.underwater = false;
+                showControls(null);
+
+                // Bonuses
+                const timeBonus = Math.max(0, Math.round(300 - state.timer * 2));
+                const techBonus = state.perfectSurfaces * 10;
+                const ruleBonus = 50;
+                state.score += timeBonus + techBonus + ruleBonus;
+                state.gamesPlayed++;
+                state.gamesWon++;
+                if (state.score > state.bestScore) {
+                    state.bestScore = state.score;
+                    localStorage.setItem('aac_best', state.bestScore);
+                }
+                localStorage.setItem('aac_games', state.gamesPlayed);
+                localStorage.setItem('aac_wins', state.gamesWon);
+                updateBest();
+
+                // Ranking
+                const pace = state.timer;
+                let rank = pace < 30 ? 'World Record Pace!' : pace < 60 ? 'Gold Medal!' : pace < 90 ? 'Silver Medal!' : 'Bronze Medal!';
+
+                // Achievements
+                let badges = [];
+                if (state.perfectSurfaces >= 3) badges.push({ t: 'Perfect Surfacer', c: 'gold' });
+                if (state.strokesTaken <= state.totalDist / 4) badges.push({ t: 'Efficient Swimmer', c: 'blue' });
+                if (state.timer < 45) badges.push({ t: 'Speed Demon', c: 'gold' });
+                badges.push({ t: 'Rule Expert', c: '' });
+                if (state.difficulty === 3) badges.push({ t: 'Expert Champion', c: 'gold' });
+
+                let html = '<span class="result-icon">&#x1F3C6;</span>';
+                html += '<h3 style="color:#1e3a5f">VICTORY! ' + rank + '</h3>';
+                html += '<div class="result-stats">';
+                html += '<div><span>Distance</span><span>' + state.totalDist + ' m</span></div>';
+                html += '<div><span>Time</span><span>' + state.timer.toFixed(1) + 's</span></div>';
+                html += '<div><span>Time Bonus</span><span>+' + timeBonus + '</span></div>';
+                html += '<div><span>Technique Bonus</span><span>+' + techBonus + '</span></div>';
+                html += '<div><span>Rule Compliance</span><span>+' + ruleBonus + '</span></div>';
+                html += '<div><span><strong>Total Score</strong></span><span><strong>' + state.score + '</strong></span></div>';
+                html += '</div>';
+                if (badges.length) {
+                    html += '<div class="achievements">';
+                    badges.forEach(b => { html += '<span class="badge ' + b.c + '">' + b.t + '</span>'; });
+                    html += '</div>';
+                }
+                html += '<div class="overlay-btns">';
+                if (state.difficulty < 3) html += '<button class="game-btn primary" onclick="window._gameNextDiff()">HARDER DIFFICULTY</button>';
+                html += '<button class="game-btn reset" onclick="window._gameReset()">PLAY AGAIN</button>';
+                html += '</div>';
+                overlayCard.innerHTML = html;
+                gameOverlay.classList.add('active');
+            }
+
+            // --- Start / Reset ---
+            function startGame() {
+                const diff = DIFFICULTIES[state.difficulty];
+                state.phase = 'diving';
+                state.totalDist = diff.distance;
+                state.lives = diff.lives;
+                state.distance = 0;
+                state.uwDist = 0;
+                state.score = 0;
+                state.fatigued = false;
+                state.boosted = false;
+                state.perfectSurfaces = 0;
+                state.strokesTaken = 0;
+                swimmer.x = 40;
+                swimmer.targetX = 40;
+                swimmer.underwater = true;
+                updateHUD();
+                updateUWBar();
+                gameOverlay.classList.remove('active');
+                btnStart.disabled = true;
+                btnReset.disabled = false;
+                setEvent('Diving in... Get ready to surface before 15m!', 'info');
+                showControls(null);
+                startTimer();
+                setTimeout(() => startUnderwater(), 1000);
+            }
+
+            function resetGame() {
+                state.phase = 'idle';
+                clearInterval(state.uwInterval);
+                stopTimer();
+                state.distance = 0;
+                state.uwDist = 0;
+                state.score = 0;
+                state.timer = 0;
+                swimmer.x = 40;
+                swimmer.targetX = 40;
+                swimmer.underwater = false;
+                hudTime.textContent = '0.0s';
+                updateHUD();
+                updateUWBar();
+                gameOverlay.classList.remove('active');
+                btnStart.disabled = false;
+                btnReset.disabled = true;
+                showControls('main');
+                setEvent('Select difficulty and press START RACE to begin!', 'info');
+            }
+
+            // --- Event Listeners ---
+            btnStart.addEventListener('click', startGame);
+            btnReset.addEventListener('click', resetGame);
+            btnSurface.addEventListener('click', doSurface);
+            window._gameReset = resetGame;
+            window._gameNextDiff = function() {
+                if (state.difficulty < 3) {
+                    state.difficulty++;
+                    document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.level) === state.difficulty));
+                }
+                resetGame();
+                setTimeout(startGame, 300);
+            };
+
+            // Difficulty buttons
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (state.phase !== 'idle') return;
+                    state.difficulty = parseInt(this.dataset.level);
+                    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const diff = DIFFICULTIES[state.difficulty];
+                    state.totalDist = diff.distance;
+                    updateHUD();
+                });
+            });
+
+            // Stroke buttons
+            document.querySelectorAll('[data-stroke]').forEach(btn => {
+                btn.addEventListener('click', function() { doStroke(this.dataset.stroke); });
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', function(e) {
+                if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); doSurface(); }
+                if (e.key === '1') doStroke('speed');
+                if (e.key === '2') doStroke('control');
+                if (e.key === '3') doStroke('cautious');
+                if (e.key === 'r' || e.key === 'R') resetGame();
+            });
+
+            updateBest();
+            updateHUD();
+        })();
+    </script>
+</body>
+</html>
